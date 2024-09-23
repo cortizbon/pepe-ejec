@@ -5,6 +5,11 @@ from plotly.subplots import make_subplots
 import plotly.graph_objects as go
 from io import BytesIO
 
+months = [
+    "Ene", "Feb", "Mar", "Abr", "May", "Jun",
+    "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"
+]
+
 st.set_page_config(layout='wide')
 
 df = pd.read_csv('ejecucion_agosto.csv')
@@ -39,33 +44,33 @@ with tab1:
 
     fig = make_subplots(rows=1, cols=2, subplot_titles=("Valores (billones)", "Porcentaje (%)"))
 
-    fig.add_trace(go.Scatter(x=total_ej.index, 
+    fig.add_trace(go.Scatter(x=months, 
                              y=total_ej.values, 
                              mode='lines+markers',
                             name='Ejecutado', showlegend=False,
                             line=dict(color='#dd722a')), row=1, col=1)
-    fig.add_trace(go.Scatter(x=total_ej.index, 
+    fig.add_trace(go.Scatter(x=months, 
                              y=total_co.values, 
                              mode='lines+markers', 
                              name='Comprometido', showlegend=False,
                              line=dict(color='#2635bf')), row=1, col=1)
 
-    fig.add_shape(type='line', x0=1, x1=8, y0=total_ap[8], y1=total_ap[8], line=dict(color='#2635bf', dash='dash'),
+    fig.add_shape(type='line', x0=0, x1=7, y0=total_ap[8], y1=total_ap[8], line=dict(color='#2635bf', dash='dash'),
                 row=1, col=1)
 
-    fig.add_trace(go.Scatter(x=total_ej_perc.index, 
+    fig.add_trace(go.Scatter(x=months, 
                              y=total_ej_perc.values, 
                              mode='lines+markers', 
                              name='Ejecutado', 
                              line=dict(color='#dd722a')), row=1, col=2)
-    fig.add_trace(go.Scatter(x=total_ej_perc.index, 
+    fig.add_trace(go.Scatter(x=months, 
                              y=total_co_perc.values, 
                              mode='lines+markers', 
                              name='Comprometido', 
                              line=dict(color='#2635bf')),  row=1, col=2)
 
 
-    fig.add_shape(type='line', x0=1, x1=8, y0=100, y1=100, line=dict(color='#2635bf', dash='dash'),
+    fig.add_shape(type='line', x0=0, x1=7, y0=100, y1=100, line=dict(color='#2635bf', dash='dash'),
                 row=1, col=2)
 
     fig.update_layout(
@@ -272,14 +277,15 @@ with tab2:
 
     # Combine original and forecasted values
     full_values = piv_sector['perc_ejecucion'].tolist() + forecast_values
+    full_values = [round(i, 1) for i in full_values]
 
     # Step 3: Create a line plot
     fig = make_subplots(rows=1, cols=2, subplot_titles=("Ejecutado (%)", "Comprometido (%)"))
 
     # Plot the first 8 values (blue solid line)
     fig.add_trace(go.Scatter(
-        x=list(range(1, 10)),  # x-axis for all values (1 to 12)
-        y=full_values,         # All values (original + forecast)
+        x=months[:9],  # x-axis for all values (1 to 12)
+        y=full_values[:9],         # All values (original + forecast)
         mode='lines+markers',  # Line and markers
         name='Observado', showlegend=False,
         line=dict(color='#2635bf', width=2),  # Solid blue line for all values
@@ -288,7 +294,7 @@ with tab2:
 
     # Highlight the forecasted part with a red dashed line (the last 4 points)
     fig.add_trace(go.Scatter(
-        x=list(range(9, 13)),  # x-axis for forecasted values
+        x=months[8:],  # x-axis for forecasted values
         y=full_values[8:],     # The forecasted values
         mode='lines+markers',          # Just lines (no markers here)
         name='Pronóstico', showlegend=False,
@@ -304,10 +310,11 @@ with tab2:
 
     # Combine original and forecasted values
     full_values = piv_sector['perc_compr'].tolist() + forecast_values
+    full_values = [round(i, 1) for i in full_values]
 
     fig.add_trace(go.Scatter(
-        x=list(range(1, 10)),  # x-axis for all values (1 to 12)
-        y=full_values,         # All values (original + forecast)
+        x=months[:9],  # x-axis for all values (1 to 12)
+        y=full_values[:9],         # All values (original + forecast)
         mode='lines+markers',  # Line and markers
         name='Observado',
         line=dict(color='#2635bf', width=2), # Solid blue line for all values
@@ -318,7 +325,7 @@ with tab2:
 
     # Highlight the forecasted part with a red dashed line (the last 4 points)
     fig.add_trace(go.Scatter(
-        x=list(range(9, 13)),  # x-axis for forecasted values
+        x=months[8:],  # x-axis for forecasted values
         y=full_values[8:],     # The forecasted values
         mode='lines+markers',          # Just lines (no markers here)
         name='Pronóstico',
@@ -385,26 +392,27 @@ with tab2:
 
     # Combine original and forecasted values
     full_values = piv_entidad['perc_ejecucion'].tolist() + forecast_values
+    full_values = [round(i, 1) for i in full_values]
 
     # Step 3: Create a line plot
     fig = make_subplots(rows=1, cols=2, subplot_titles=("Ejecutado (%)", "Comprometido (%)"))
 
     # Plot the first 8 values (blue solid line)
     fig.add_trace(go.Scatter(
-        x=list(range(1, 10)),  # x-axis for all values (1 to 12)
-        y=full_values,         # All values (original + forecast)
+        x=months[:9],  # x-axis for all values (1 to 12)
+        y=full_values[:9],         # All values (original + forecast)
         mode='lines+markers',  # Line and markers
-        name='Values', showlegend=False,
+        name='Observado', showlegend=False,
         line=dict(color='#2635bf', width=2),  # Solid blue line for all values
         marker=dict(color=['#2635bf']*9, size=8)  # Red markers for forecasted values
     ), row=1, col=1)
 
     # Highlight the forecasted part with a red dashed line (the last 4 points)
     fig.add_trace(go.Scatter(
-        x=list(range(9, 13)),  # x-axis for forecasted values
+        x=months[8:],  # x-axis for forecasted values
         y=full_values[8:],     # The forecasted values
         mode='lines+markers',          # Just lines (no markers here)
-        name='Forecasted Values', showlegend=False,
+        name='Pronóstico', showlegend=False,
         line=dict(color='#dd722a', width=2, dash='dash'),
         marker=dict(color='#dd722a', size=8),  # Dashed line for forecast
     ), row=1, col=1)
@@ -417,10 +425,11 @@ with tab2:
 
     # Combine original and forecasted values
     full_values = piv_entidad['perc_compr'].tolist() + forecast_values
+    full_values = [round(i, 1) for i in full_values]
 
     fig.add_trace(go.Scatter(
-        x=list(range(1, 10)),  # x-axis for all values (1 to 12)
-        y=full_values,         # All values (original + forecast)
+        x=months[:9],  # x-axis for all values (1 to 12)
+        y=full_values[:9],         # All values (original + forecast)
         mode='lines+markers',  # Line and markers
         name='Observado', showlegend=True,
         line=dict(color='#2635bf', width=2),  # Solid blue line for all values
@@ -431,7 +440,7 @@ with tab2:
 
     # Highlight the forecasted part with a red dashed line (the last 4 points)
     fig.add_trace(go.Scatter(
-        x=list(range(9, 13)),  # x-axis for forecasted values
+        x=months[8:],  # x-axis for forecasted values
         y=full_values[8:],     # The forecasted values
         mode='lines+markers',          # Just lines (no markers here)
         name='Pronóstico', showlegend=True,
