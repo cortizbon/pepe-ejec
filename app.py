@@ -479,8 +479,10 @@ with tab2:
 
     
 with tab3:
-    binary_output = BytesIO()
-    df.to_excel(binary_output, index=False)
-    st.download_button(label = 'Descargar excel',
-                    data = binary_output.getvalue(),
-                    file_name = 'datos_ejecucion_agosto.xlsx')
+
+    csv = df.to_csv(index=False).encode('utf-8')
+    st.download_button(
+                label="Descargar CSV",
+                data=csv,
+                file_name='datos_ejecucion_agosto.csv',
+                mime='text/csv')
