@@ -333,9 +333,9 @@ with tab2:
         marker=dict(color='#dd722a', size=8),  # Dashed line for forecast
     ), row=1, col=2)
 
-    fig.add_shape(type='line', x0=1, x1=12, y0=100, y1=100, line=dict(color='#2635bf', dash='dash'),
+    fig.add_shape(type='line', x0=0, x1=11, y0=100, y1=100, line=dict(color='#2635bf', dash='dash'),
                 row=1, col=2)
-    fig.add_shape(type='line', x0=1, x1=12, y0=100, y1=100, line=dict(color='#2635bf', dash='dash'),
+    fig.add_shape(type='line', x0=0, x1=11, y0=100, y1=100, line=dict(color='#2635bf', dash='dash'),
                 row=1, col=1)
     fig.update_yaxes(range=[0, max(100, max(full_values))]) 
 
@@ -448,9 +448,9 @@ with tab2:
         marker=dict(color='#dd722a', size=8),  # Dashed line for forecast
     ), row=1, col=2)
 
-    fig.add_shape(type='line', x0=1, x1=12, y0=100, y1=100, line=dict(color='#2635bf', dash='dash'),
+    fig.add_shape(type='line', x0=0, x1=11, y0=100, y1=100, line=dict(color='#2635bf', dash='dash'),
                 row=1, col=2)
-    fig.add_shape(type='line', x0=1, x1=12, y0=100, y1=100, line=dict(color='#2635bf', dash='dash'),
+    fig.add_shape(type='line', x0=0, x1=11, y0=100, y1=100, line=dict(color='#2635bf', dash='dash'),
                 row=1, col=1)
     fig.update_yaxes(range=[0, max(100, max(full_values))]) 
 
