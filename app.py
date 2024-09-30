@@ -38,39 +38,98 @@ with tab1:
     with col3:
         st.metric("Comprometido (bil)", total_co[8])
     with col4:
-        st.metric("% ejecutado", total_ej_perc[8])
+        st.metric("% ejecutado (al mes actual)", total_ej_perc[8])
     with col5:
-        st.metric("% comprometido", total_co_perc[8])
+        st.metric("% comprometido (al mes actual)", total_co_perc[8])
 
     fig = make_subplots(rows=1, cols=2, subplot_titles=("Valores (billones)", "Porcentaje (%)"))
 
-    fig.add_trace(go.Scatter(x=months, 
-                             y=total_ej.values, 
+    mean_growth_rate = (total_ej.loc[8] / 8)
+    forecast_values = [mean_growth_rate * i  for i in range(9, 13)]
+    full_values_ej = list(total_ej.values) + forecast_values
+    full_values_ej = [round(i, 1) for i in full_values_ej]
+    fig.add_trace(go.Scatter(x=months[:9], 
+                             y=full_values_ej[:9], 
                              mode='lines+markers',
                             name='Ejecutado', showlegend=False,
                             line=dict(color='#dd722a')), row=1, col=1)
-    fig.add_trace(go.Scatter(x=months, 
-                             y=total_co.values, 
+
+    # Highlight the forecasted part with a red dashed line (the last 4 points)
+    fig.add_trace(go.Scatter(
+        x=months[8:],  # x-axis for forecasted values
+        y=full_values_ej[8:],     # The forecasted values
+        mode='lines+markers',          # Just lines (no markers here)
+        name='Pronóstico', 
+        line=dict(color='#81D3CD', width=2, dash='dash'),
+        marker=dict(color='#81D3CD', size=8),  # Dashed line for forecast
+    ), row=1, col=1)
+
+    mean_growth_rate = (total_co.loc[8] / 8)
+    forecast_values = [mean_growth_rate * i  for i in range(9, 13)]
+    full_values_co = list(total_co.values) + forecast_values
+    full_values_co = [round(i, 1) for i in full_values_co]
+
+
+    fig.add_trace(go.Scatter(x=months[:9], 
+                             y=full_values_co[:9], 
                              mode='lines+markers', 
                              name='Comprometido', showlegend=False,
                              line=dict(color='#2635bf')), row=1, col=1)
+    fig.add_trace(go.Scatter(
+        x=months[8:],  # x-axis for forecasted values
+        y=full_values_co[8:],     # The forecasted values
+        mode='lines+markers',          # Just lines (no markers here)
+        name='Pronóstico', showlegend=False,
+        line=dict(color='#81D3CD', width=2, dash='dash'),
+        marker=dict(color='#81D3CD', size=8),  # Dashed line for forecast
+    ), row=1, col=1)
 
-    fig.add_shape(type='line', x0=0, x1=7, y0=total_ap[8], y1=total_ap[8], line=dict(color='#2635bf', dash='dash'),
+    fig.add_shape(type='line', x0=0, x1=11, y0=total_ap[8], y1=total_ap[8], line=dict(color='#2635bf', dash='dash'),
                 row=1, col=1)
 
-    fig.add_trace(go.Scatter(x=months, 
-                             y=total_ej_perc.values, 
+    
+    mean_growth_rate = (total_ej_perc.loc[8] / 8)
+    forecast_values = [mean_growth_rate * i  for i in range(9, 13)]
+    full_values_perc = list(total_ej_perc.values) + forecast_values
+    full_values_perc = [round(i, 1) for i in full_values_perc]
+
+    fig.add_trace(go.Scatter(x=months[:9], 
+                             y=full_values_perc[:9], 
                              mode='lines+markers', 
                              name='Ejecutado', 
                              line=dict(color='#dd722a')), row=1, col=2)
-    fig.add_trace(go.Scatter(x=months, 
-                             y=total_co_perc.values, 
+
+    fig.add_trace(go.Scatter(
+        x=months[8:],  # x-axis for forecasted values
+        y=full_values_perc[8:],     # The forecasted values
+        mode='lines+markers',          # Just lines (no markers here)
+        name='Pronóstico', showlegend=False,
+        line=dict(color='#81D3CD', width=2, dash='dash'),
+        marker=dict(color='#81D3CD', size=8),  # Dashed line for forecast
+    ), row=1, col=2)
+
+
+
+    mean_growth_rate = (total_co_perc.loc[8] / 8)
+    forecast_values = [mean_growth_rate * i  for i in range(9, 13)]
+    full_values_co = list(total_co_perc.values) + forecast_values
+    full_values_co = [round(i, 1) for i in full_values_co]
+
+    fig.add_trace(go.Scatter(x=months[:9], 
+                             y=full_values_co[:9], 
                              mode='lines+markers', 
                              name='Comprometido', 
                              line=dict(color='#2635bf')),  row=1, col=2)
+    fig.add_trace(go.Scatter(
+        x=months[8:],  # x-axis for forecasted values
+        y=full_values_co[8:],     # The forecasted values
+        mode='lines+markers',          # Just lines (no markers here)
+        name='Pronóstico', showlegend=False,
+        line=dict(color='#81D3CD', width=2, dash='dash'),
+        marker=dict(color='#81D3CD', size=8),  # Dashed line for forecast
+    ), row=1, col=2)
 
-
-    fig.add_shape(type='line', x0=0, x1=7, y0=100, y1=100, line=dict(color='#2635bf', dash='dash'),
+    fig.add_shape(type='line', x0=0, x1=11, y0=100, y1=100, line=dict(color='#2635bf', dash='dash'),
                 row=1, col=2)
 
     fig.update_layout(
@@ -79,13 +138,20 @@ with tab1:
         width=900,
         legend=dict(
             orientation='h',   # Horizontal legend
-            x=0.72,             # Center the legend
+            x=0.64,             # Center the legend
             y=1.1,             # Position it slightly above the plots
             xanchor='left',  # Center the legend horizontally
             yanchor='bottom'   # Align the legend vertically
         )
     )
     st.plotly_chart(fig)
+
+    perd_aprop = 100 - full_values_co[-1]
+
+    if perd_aprop > 0:
+        st.error(f"Hay una pérdida de apropiación del {round(perd_aprop, 2)}%.")
+    else:
+        st.success(f"No hay pérdida de apropiación.")
 
     piv_s = (df[df['mes_num'] == 8].pivot_table(index='Sector',
                                    values=['APR. VIGENTE','OBLIGACION', 'COMPROMISO'],
@@ -273,7 +339,7 @@ with tab2:
 
     # Step 2: Forecast the next 4 values
     last_value = piv_sector['perc_ejecucion'].iloc[-1]
-    forecast_values = [last_value * (1 + mean_growth_rate)**i for i in range(1, 5)]
+    forecast_values = [mean_growth_rate * i * 100 for i in range(9, 13)]
 
     # Combine original and forecasted values
     full_values = piv_sector['perc_ejecucion'].tolist() + forecast_values
@@ -306,7 +372,7 @@ with tab2:
 
     # Step 2: Forecast the next 4 values
     last_value = piv_sector['perc_compr'].iloc[-1]
-    forecast_values = [last_value * (1 + mean_growth_rate)**i for i in range(1, 5)]
+    forecast_values = [mean_growth_rate * i * 100 for i in range(9, 13)]
 
     # Combine original and forecasted values
     full_values = piv_sector['perc_compr'].tolist() + forecast_values
@@ -388,7 +454,7 @@ with tab2:
 
     # Step 2: Forecast the next 4 values
     last_value = piv_entidad['perc_ejecucion'].iloc[-1]
-    forecast_values = [last_value * (1 + mean_growth_rate)**i for i in range(1, 5)]
+    forecast_values = [mean_growth_rate * i * 100 for i in range(9, 13)]
 
     # Combine original and forecasted values
     full_values = piv_entidad['perc_ejecucion'].tolist() + forecast_values
@@ -421,7 +487,7 @@ with tab2:
 
     # Step 2: Forecast the next 4 values
     last_value = piv_entidad['perc_compr'].iloc[-1]
-    forecast_values = [last_value * (1 + mean_growth_rate)**i for i in range(1, 5)]
+    forecast_values = [mean_growth_rate * i * 100 for i in range(9, 13)]
 
     # Combine original and forecasted values
     full_values = piv_entidad['perc_compr'].tolist() + forecast_values
